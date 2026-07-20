@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "vendor:bb": "node ../../scripts/vendor-bb.mjs",
+    "vendor:bb": "node ./scripts/vendor-bb.mjs",
     "predev": "pnpm vendor:bb",
     "dev": "next dev --webpack --port 3001",
     "prebuild": "pnpm vendor:bb",
