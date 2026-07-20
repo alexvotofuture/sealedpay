@@ -1,0 +1,29 @@
+{
+  "name": "@ctd/pay",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "vendor:bb": "node ../../scripts/vendor-bb.mjs",
+    "predev": "pnpm vendor:bb",
+    "dev": "next dev --webpack --port 3001",
+    "prebuild": "pnpm vendor:bb",
+    "build": "next build --webpack",
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ctd/sdk": "workspace:*",
+    "@stellar/freighter-api": "^4.1.0",
+    "@stellar/stellar-sdk": "^14.2.0",
+    "next": "16.2.9",
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "typescript": "^5.7.0"
+  }
+}

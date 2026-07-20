@@ -1,0 +1,622 @@
+/* Sealed — design tokens
+   Ink-on-paper ledger for a payments app whose whole point is that amounts
+   stay sealed. One accent (spruce = money in motion), mono for anything a
+   ledger would print, and the signature: sealed amount chips. */
+
+:root {
+  --ink: #14242f;
+  --ink-2: #2c3f4b;
+  --paper: #ecf1f2;
+  --card: #ffffff;
+  --line: #d8e1e3;
+  --muted: #64757d;
+  --spruce: #0c6b54;
+  --spruce-ink: #095342;
+  --spruce-soft: #e2efe9;
+  --danger: #a93a2b;
+  --danger-soft: #f6e7e3;
+  --seal: #14242f;
+  --seal-text: #cfe0da;
+  --radius: 14px;
+  --radius-sm: 9px;
+  --font-display: var(--font-display), serif;
+  --font-body: var(--font-body), system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--spruce);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ------------------------------------------------------------- shell ---- */
+
+.shell {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 20px 16px 64px;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.masthead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 2px 4px;
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 26px;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.wordmark .tld {
+  color: var(--spruce);
+}
+
+.net-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 3px 10px;
+  background: var(--card);
+  white-space: nowrap;
+}
+
+.addr-chip {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-2);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* -------------------------------------------------------------- cards ---- */
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.balance-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.balance-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.balance-figure {
+  font-family: var(--font-mono);
+  font-size: 44px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-height: 48px;
+}
+
+.balance-figure .unit {
+  font-size: 16px;
+  color: var(--muted);
+}
+
+.pending-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px dashed var(--line);
+  padding-top: 12px;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+.chain-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.chain-badge.ok::before {
+  content: "● ";
+  color: var(--spruce);
+}
+
+.chain-badge.bad::before {
+  content: "● ";
+  color: var(--danger);
+}
+
+/* ---------------------------------------------------- sealed amounts ----- */
+/* The signature element. Amounts render as a sealed chip — same silhouette
+   masked or revealed, so nothing shifts when a seal is broken. */
+
+.seal-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  border-radius: 7px;
+  padding: 1px 9px;
+  border: 1px solid transparent;
+  background: var(--seal);
+  color: var(--seal-text);
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  user-select: none;
+  transition: background 140ms ease, color 140ms ease, letter-spacing 140ms ease;
+}
+
+.seal-chip.open {
+  background: transparent;
+  border-color: var(--line);
+  color: inherit;
+  letter-spacing: 0;
+}
+
+.seal-chip .wax {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--spruce);
+  flex: none;
+  transition: transform 140ms ease, background 140ms ease;
+}
+
+.seal-chip.open .wax {
+  background: var(--line);
+  transform: scale(0.72);
+}
+
+.seal-chip.public {
+  background: transparent;
+  border-color: transparent;
+  color: inherit;
+  letter-spacing: 0;
+  cursor: default;
+  padding-left: 0;
+}
+
+.seal-big {
+  all: unset;
+  cursor: pointer;
+  font: inherit;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.seal-big .masked {
+  letter-spacing: 0.18em;
+  color: var(--ink-2);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .seal-reveal {
+    animation: unseal 220ms ease;
+  }
+
+  @keyframes unseal {
+    from {
+      filter: blur(6px);
+      opacity: 0.4;
+    }
+    to {
+      filter: blur(0);
+      opacity: 1;
+    }
+  }
+}
+
+/* ------------------------------------------------------------- buttons ---- */
+
+.btn {
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: var(--radius-sm);
+  padding: 10px 18px;
+  font-weight: 600;
+  font-size: 15px;
+  transition: transform 80ms ease, opacity 120ms ease;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.btn.primary {
+  background: var(--spruce);
+  border-color: var(--spruce);
+  color: #fff;
+}
+
+.btn.primary:not(:disabled):hover {
+  background: var(--spruce-ink);
+  border-color: var(--spruce-ink);
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+.btn.ghost:not(:disabled):hover {
+  border-color: var(--ink-2);
+}
+
+.btn.small {
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 8px;
+}
+
+.btn.wide {
+  width: 100%;
+}
+
+/* ---------------------------------------------------------------- tabs ---- */
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 4px;
+}
+
+.tabs button {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  border-radius: 10px;
+  padding: 9px 0;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.tabs button[aria-selected="true"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* --------------------------------------------------------------- forms ---- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.field label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.field input,
+.field select {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 11px 12px;
+  background: var(--paper);
+  color: var(--ink);
+  width: 100%;
+}
+
+.field input.mono {
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.field .hint {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.mode-switch {
+  display: inline-flex;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.mode-switch button {
+  border: 0;
+  background: none;
+  padding: 2px 0;
+  font-weight: 600;
+  color: var(--muted);
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+}
+
+.mode-switch button[aria-selected="true"] {
+  color: var(--ink);
+  border-bottom-color: var(--spruce);
+}
+
+/* ------------------------------------------------------------- activity ---- */
+
+.feed {
+  display: flex;
+  flex-direction: column;
+}
+
+.feed-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 4px;
+  border-bottom: 1px solid var(--line);
+}
+
+.feed-row:last-child {
+  border-bottom: 0;
+}
+
+.feed-glyph {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  flex: none;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+}
+
+.feed-glyph.in {
+  background: var(--spruce-soft);
+  border-color: transparent;
+  color: var(--spruce-ink);
+}
+
+.feed-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.feed-title {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.feed-sub {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.feed-amt {
+  flex: none;
+  font-size: 14px;
+}
+
+.feed-amt .in {
+  color: var(--spruce-ink);
+}
+
+.empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 28px 12px;
+}
+
+.empty strong {
+  color: var(--ink);
+  display: block;
+  font-family: var(--font-display);
+  font-size: 17px;
+  margin-bottom: 4px;
+}
+
+/* ------------------------------------------------------------- contacts ---- */
+
+.contact-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 4px;
+  border-bottom: 1px solid var(--line);
+}
+
+.contact-row:last-child {
+  border-bottom: 0;
+}
+
+.contact-name {
+  font-weight: 600;
+}
+
+.contact-addr {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.row-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 6px;
+}
+
+.link-btn {
+  border: 0;
+  background: none;
+  color: var(--spruce-ink);
+  font-weight: 600;
+  padding: 4px;
+}
+
+.link-btn.danger {
+  color: var(--danger);
+}
+
+/* ----------------------------------------------------------- onboarding ---- */
+
+.hero {
+  text-align: left;
+  padding: 44px 6px 10px;
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(34px, 9vw, 46px);
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  margin: 0 0 14px;
+}
+
+.hero h1 em {
+  font-style: normal;
+  color: var(--spruce);
+}
+
+.hero p {
+  color: var(--ink-2);
+  max-width: 44ch;
+  margin: 0 0 22px;
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 18px 0 22px;
+}
+
+.step {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  color: var(--ink-2);
+}
+
+.step .k {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  flex: none;
+}
+
+.notice {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--spruce);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.notice.warn {
+  border-left-color: var(--danger);
+}
+
+/* ------------------------------------------------------------ status bar ---- */
+
+.status {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  padding: 6px 4px 0;
+  min-height: 22px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status.error {
+  color: var(--danger);
+  white-space: normal;
+}
+
+.txlink {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@media (max-width: 420px) {
+  .balance-figure {
+    font-size: 36px;
+  }
+}
